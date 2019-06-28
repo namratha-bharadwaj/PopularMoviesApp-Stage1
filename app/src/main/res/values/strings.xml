@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">PopularMoviesApp-Stage1</string>
+
+    <!--String to display error message -->
+    <string name="error_message">Something went wrong! Try again.</string>
+    <string name="detail_error_message">Movie data not available</string>
+
+    <string name="movie_poster_content_description">Movie Poster</string>
+    <string name="original_title">Original Title: </string>
+    <string name="plot">Plot: </string>
+    <string name="user_rating">User Rating: </string>
+    <string name="release_date">Release Date: </string>
+    <string name="sort_by_most_popular">Most Popular</string>
+    <string name="sort_by_top_rated">Top Rated</string>
+    <string name="app_title">Popular Movies 1.0</string>
+    <string name="details_screen_title">Movie Details</string>
+
+</resources>
