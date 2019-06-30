@@ -7,12 +7,23 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.Scanner;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 public class NetworkUtils {
 
-    private static final String MOVIE_POSTER_BASE_URL = "http://image.tmdb.org/t/p/w185";
-    private static final String MOVIE_DB_BASE_URL = "http://api.themoviedb.org/3/movie";
+    private static final String MOVIE_POSTER_BASE_URL = "https://image.tmdb.org/t/p/w92";
+    private static final String MOVIE_DB_BASE_URL = "https://api.themoviedb.org/3/movie";
     private static final String API_KEY_PARAM = "api_key";
 
     /**
@@ -47,8 +58,12 @@ public class NetworkUtils {
      * @throws IOException Related to network and stream reading
      */
     public static String getResponseFromHttpUrl(URL url) throws IOException {
-        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+        HttpsURLConnection urlConnection = null;
+        SSLContext sslcxt = disableSSLCertificateChecking();
         try {
+            urlConnection = (HttpsURLConnection) url.openConnection();
+            urlConnection.setSSLSocketFactory(sslcxt.getSocketFactory());
+
             InputStream in = urlConnection.getInputStream();
 
             Scanner scanner = new Scanner(in);
@@ -60,17 +75,58 @@ public class NetworkUtils {
             } else {
                 return null;
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         } finally {
-            urlConnection.disconnect();
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
         }
     }
 
     public static String buildUrlForMoviePoster(String poster) {
 
-        String finalPath = MOVIE_POSTER_BASE_URL + "/" + poster;
+        String finalPath = MOVIE_POSTER_BASE_URL + poster;
         return finalPath;
 
     }
 
+    /**
+     * Disables the SSL certificate checking for new instances of {@link HttpsURLConnection} This has been created to
+     * aid testing on a local box, not for use on production.
+     */
+    private static SSLContext disableSSLCertificateChecking() {
+        TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+            public X509Certificate[] getAcceptedIssuers() {
+                return null;
+            }
+
+            @Override
+            public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
+                // Not implemented
+            }
+
+            @Override
+            public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
+                // Not implemented
+            }
+        } };
+
+        try {
+            SSLContext sc = SSLContext.getInstance("TLS");
+
+            sc.init(null, trustAllCerts, new java.security.SecureRandom());
+            return sc;
+
+//            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+            return null;
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
 }

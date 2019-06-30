@@ -151,10 +151,12 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             if(searchResults != null && !searchResults.isEmpty()) {
                 try {
                     mMoviesList = JsonUtils.parseJsonForMovieData(MainActivity.this, searchResults);
-                    if (mMoviesList != null)
+                    if (mMoviesList != null) {
+                        showMovieDataView();
                         mMovieAdapter.setMovieData(mMoviesList);
-                    else
+                    } else {
                         showErrorMessageView();
+                    }
 
                 } catch (JSONException e) {
                     e.printStackTrace();

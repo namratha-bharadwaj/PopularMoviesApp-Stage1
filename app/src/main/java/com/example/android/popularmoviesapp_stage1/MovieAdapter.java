@@ -35,41 +35,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         mContext = context;
     }
 
-    @NonNull
-    @Override
-    public MovieAdapterViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        Context context = viewGroup.getContext();
-        int layoutIdForListItem = R.layout.movie_list_item;
-        LayoutInflater inflater = LayoutInflater.from(context);
-        boolean shouldAttachToParentImmediately = false;
-
-        View view = inflater.inflate(layoutIdForListItem, viewGroup, shouldAttachToParentImmediately);
-        return new MovieAdapterViewHolder(view);
-
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull MovieAdapterViewHolder movieAdapterViewHolder, int position) {
-        movieAdapterViewHolder.bind(position);
-    }
-
-    @Override
-    public int getItemCount() {
-        return (mMovieItemsList != null ? mMovieItemsList.size() : 0);
-    }
-
-    public void setMovieData(List<MovieData> mMovieItemsList) {
-        this.mMovieItemsList = mMovieItemsList;
-        notifyDataSetChanged();
-    }
-
     public class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public ImageView mMovieItemImageView;
 
         public MovieAdapterViewHolder(View view) {
             super(view);
-            mMovieItemImageView = (ImageView) view.findViewById(R.id.movie_list_item_poster_iv);
+            mMovieItemImageView = view.findViewById(R.id.movie_list_item_poster_iv);
             view.setOnClickListener(this);
         }
 
@@ -85,21 +57,43 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
             mOnClickListener.OnListItemClick(movieItem);
         }
 
-        void bind(int listIndex) {
-            MovieData movieItem = mMovieItemsList.get(listIndex);
-            mMovieItemImageView = itemView.findViewById(R.id.movie_list_item_poster_iv);
-            String posterPathURL = NetworkUtils.buildUrlForMoviePoster(movieItem.getMoviePoster());
-            try {
+    }
+
+    @Override
+    public MovieAdapterViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+        Context context = viewGroup.getContext();
+        int layoutIdForListItem = R.layout.movie_list_item;
+        LayoutInflater inflater = LayoutInflater.from(context);
+        boolean shouldAttachToParentImmediately = false;
+
+        View view = inflater.inflate(layoutIdForListItem, viewGroup, shouldAttachToParentImmediately);
+        return new MovieAdapterViewHolder(view);
+
+    }
+
+    @Override
+    public void onBindViewHolder(MovieAdapterViewHolder movieAdapterViewHolder, int position) {
+        MovieData currentMovieData = mMovieItemsList.get(position);
+        String posterPathURL = NetworkUtils.buildUrlForMoviePoster(currentMovieData.getMoviePoster());
+        try {
                 Picasso.with(mContext)
                         .load(posterPathURL)
                         .placeholder(R.mipmap.ic_launcher)
                         .error(R.mipmap.ic_launcher)
-                        .into(mMovieItemImageView);
+                        .into(movieAdapterViewHolder.mMovieItemImageView);
             } catch (Exception ex) {
                 Log.e(TAG, ex.getMessage());
             }
-        }
+    }
 
+    @Override
+    public int getItemCount() {
+        return (mMovieItemsList != null ? mMovieItemsList.size() : 0);
+    }
+
+    public void setMovieData(List<MovieData> mMovieItemsList) {
+        this.mMovieItemsList = mMovieItemsList;
+        notifyDataSetChanged();
     }
 
 }

@@ -20,13 +20,9 @@ public class MovieDetails extends AppCompatActivity {
 
     private MovieData movieData;
     private ImageView movieDetailsImageView;
-    private TextView originalTitleLabelTextView;
     private TextView originalTitleTextView;
-    private TextView plotLabelTextView;
     private TextView plotTextView;
-    private TextView userRatingLabelTextView;
     private TextView userRatingTextView;
-    private TextView releaseDateLabelTextView;
     private TextView releaseDateTextView;
 
     @Override
@@ -37,13 +33,10 @@ public class MovieDetails extends AppCompatActivity {
 
 
         movieDetailsImageView = findViewById(R.id.movie_details_image_iv);
-        originalTitleLabelTextView = findViewById(R.id.original_title_label_tv);
         originalTitleTextView = findViewById(R.id.original_title_tv);
-        plotLabelTextView = findViewById(R.id.plot_label_tv);
         plotTextView = findViewById(R.id.plot_tv);
-        userRatingLabelTextView = findViewById(R.id.user_rating_label_tv);
         userRatingTextView = findViewById(R.id.user_rating_tv);
-        releaseDateLabelTextView = findViewById(R.id.release_date_tv);
+        releaseDateTextView = findViewById(R.id.release_date_tv);
 
         Intent intent = getIntent();
         if (intent == null) {
