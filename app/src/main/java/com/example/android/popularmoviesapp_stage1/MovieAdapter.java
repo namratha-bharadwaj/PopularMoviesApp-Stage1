@@ -75,14 +75,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         MovieData currentMovieData = mMovieItemsList.get(position);
         String posterPathURL = NetworkUtils.buildUrlForMoviePoster(currentMovieData.getMoviePoster());
         try {
-                Picasso.with(mContext)
-                        .load(posterPathURL)
-                        .placeholder(R.mipmap.ic_launcher)
-                        .error(R.mipmap.ic_launcher)
-                        .into(movieAdapterViewHolder.mMovieItemImageView);
-            } catch (Exception ex) {
-                Log.e(TAG, ex.getMessage());
-            }
+            Picasso.with(mContext)
+                    .load(posterPathURL)
+                    .placeholder(R.mipmap.ic_launcher)
+                    .error(R.mipmap.ic_launcher)
+                    .into(movieAdapterViewHolder.mMovieItemImageView);
+        } catch (Exception ex) {
+            Log.e(TAG, ex.getMessage());
+        }
     }
 
     @Override

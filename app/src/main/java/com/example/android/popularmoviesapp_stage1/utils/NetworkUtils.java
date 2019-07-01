@@ -28,7 +28,7 @@ import javax.net.ssl.X509TrustManager;
 
 public class NetworkUtils {
 
-    private static final String MOVIE_POSTER_BASE_URL = "https://image.tmdb.org/t/p/w92";
+    private static final String MOVIE_POSTER_BASE_URL = "https://image.tmdb.org/t/p/w342";
     private static final String MOVIE_DB_BASE_URL = "https://api.themoviedb.org/3/movie";
     private static final String API_KEY_PARAM = "api_key";
 
