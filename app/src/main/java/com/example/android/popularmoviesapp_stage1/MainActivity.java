@@ -2,6 +2,7 @@ package com.example.android.popularmoviesapp_stage1;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movies_list);
+        setTitle(getString(R.string.app_title));
 
         mRecyclerView = findViewById(R.id.recyclerView_movie_list);
         mErrorMessageDisplay = findViewById(R.id.tv_error_message_display);
@@ -137,10 +139,13 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         protected String doInBackground(URL... urls) {
             URL searchUrl = urls[0];
             String searchResults = null;
-            try {
-                searchResults = NetworkUtils.getResponseFromHttpUrl(searchUrl);
-            } catch (IOException e) {
-                e.printStackTrace();
+            boolean isOnline = NetworkUtils.checkInternetConnection();
+            if(isOnline) {
+                try {
+                    searchResults = NetworkUtils.getResponseFromHttpUrl(searchUrl);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
             return searchResults;
         }
@@ -148,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         @Override
         protected void onPostExecute(String searchResults) {
             mLoadingIndicator.setVisibility(View.INVISIBLE);
-            if(searchResults != null && !searchResults.isEmpty()) {
+            if(null != searchResults && !searchResults.isEmpty()) {
                 try {
                     mMoviesList = JsonUtils.parseJsonForMovieData(MainActivity.this, searchResults);
                     if (mMoviesList != null) {
@@ -182,5 +187,4 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         /* Then, show the error */
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
     }
-
 }
